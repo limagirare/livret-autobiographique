@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>mon livret autobiographique</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial Rounded MT Bold', sans-serif;
+            background-color: #fff9f0;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .left-panel {
+            background-color: #b5dfd6;
+            width: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 60px;
+            color: #a2cbbf;
+            margin-bottom: 10px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day-name {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .cell {
+            background-color: #f2ebe2;
+            height: 100px;
+            border-radius: 10px;
+            text-align: center;
+            padding-top: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .cell:hover {
+            background-color: #d3f0ea;
+        }
+
+        .highlight {
+            background-color: #a2cbbf;
+            color: black;
+            font-weight: bold;
+        }
+
+        /* Popup */
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .popup-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 15px 20px;
+            /* moins de hauteur */
+            border-radius: 10px;
+            width: 80%;
+            max-height: 80vh;
+            /* Limite la hauteur à 80% de l'écran */
+            overflow-y: auto;
+            /* Permet de faire défiler si le contenu dépasse */
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+
+        .sommaire {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sommaire li {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            border-bottom: 1px dotted #aaa;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+        }
+
+        .sommaire .titre {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sommaire .numero {
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .popup-content h3 {
+            margin-top: 0;
+        }
+
+        .popup-content p,
+        .popup-content ul {
+            line-height: 1.6;
+        }
+
+        .popup-content img {
+            max-width: 100%;
+            max-height: calc(90vh - 100px);
+            /* laisse 100px pour padding + bouton fermer */
+            height: auto;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
+
+        }
+
+        .alinea {
+            text-indent: 2em;
+            /* ou 30px */
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 2px solid rgb(255, 255, 255);
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        th,
+        td {
+            border: 1px solid rgb(255, 255, 255);
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        tbody>tr:nth-of-type(even) {
+            background-color: rgb(255, 255, 255);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="left-panel">
+            Oriol PIQUERAS PIRIS
+        </div>
+
+        <div class="main-content">
+            <h1>ma vie</h1>
+
+            <div class="calendar">
+                <div class="day-name">L</div>
+                <div class="day-name">M</div>
+                <div class="day-name">M</div>
+                <div class="day-name">J</div>
+                <div class="day-name">V</div>
+                <div class="day-name">S</div>
+                <div class="day-name">D</div>
+
+                <!-- Empty cells for alignment -->
+                <div></div>
+                <!-- Jan 1st -->
+                <div class="cell highlight" onclick="openPopup('popup1')">1<br>
+                </div>
+                <div class="cell highlight" onclick="openPopup('popup2')">2<br></div>
+                <div class="cell highlight" onclick="openPopup('popup3')">3<br></div>
+                <div class="cell highlight" onclick="openPopup('popup4')">4<br></div>
+                <div class="cell highlight" onclick="openPopup('popup5')">5<br></div>
+                <div class="cell">6</div>
+                <div class="cell highlight" onclick="openPopup('popup7')">7<br></div>
+                <div class="cell highlight" onclick="openPopup('popup8')">8<br></div>
+                <div class="cell highlight" onclick="openPopup('popup9')">9<br></div>
+                <div class="cell highlight" onclick="openPopup('popup10')">10<br></div>
+                <div class="cell">11</div>
+                <div class="cell highlight" onclick="openPopup('popup12')">12<br></div>
+                <div class="cell">13</div>
+                <div class="cell">14</div>
+                <div class="cell highlight" onclick="openPopup('popup15')">15<br></div>
+                <div class="cell highlight" onclick="openPopup('popup16')">16<br></div>
+                <div class="cell">17</div>
+                <div class="cell">18</div>
+                <div class="cell highlight" onclick="openPopup('popup19')">19<br></div>
+                <div class="cell highlight" onclick="openPopup('popup20')">20<br></div>
+                <div class="cell highlight" onclick="openPopup('popup21')">21<br></div>
+                <div class="cell highlight" onclick="openPopup('popup22')">22<br></div>
+                <div class="cell">23</div>
+                <div class="cell">24</div>
+                <div class="cell">25</div>
+                <div class="cell highlight" onclick="openPopup('popup26')">26<br></div>
+                <div class="cell">27</div>
+                <div class="cell">28</div>
+                <div class="cell highlight" onclick="openPopup('popup29')">29<br></div>
+                <div class="cell">30</div>
+
+                <!-- Add more as needed... -->
+            </div>
+        </div>
+    </div>
+
+    <div id="popup1" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup1')">&times;</span>
+            <h3>Sommaire</h3>
+            <p>Voici le sommaire de mon livret autobiographique :</p>
+            <p><b>1ère partie</b></p>
+            <ul class="sommaire">
+                <li><span class="titre">L’incipit de ma naissance
+                    </span><span class="numero">2</span>
+                </li>
+                <li><span class="titre">Ma biographie d’auteur à la manière de Michaux</span><span
+                        class="numero">3</span></li>
+                <li><span class="titre">Mes notes de chevet à la manière de Sei Shonagon</span><span
+                        class="numero">4</span></li>
+                <li><span class="titre">Inventaire : j’aime/je n’aime pas à la manière de Perec et Barthes</span><span
+                        class="numero">5</span></li>
+                <li><span class="titre">Mon autoportrait à la manière d'Édouard Levé</span><span class="numero">7</span>
+                </li>
+                <li><span class="titre">Mon portrait chinois (par moi)</span><span class="numero">8</span></li>
+                <li><span class="titre">Mon portrait chinois (par un autre)</span><span class="numero">9</span></li>
+                <li><span class="titre">Inventaire : Je me souviens à la manière de Perec</span><span
+                        class="numero">10</span></li>
+                <li><span class="titre">Trois souvenirs d’école à la manière de Perec</span><span
+                        class="numero">12</span></li>
+                <li><span class="titre">Un souvenir lié à une sensation à la manière de l'épisode de la madeleine de
+                        Proust</span><span class="numero">15</span></li>
+            </ul>
+
+            <p><b>2ème partie</b></p>
+            <ul class="sommaire">
+                <li><span class="titre">Autoportrait avec un objet qui me représente</span><span
+                        class="numero">16</span></li>
+                <li><span class="titre">Si j’étais un paysage</span><span class="numero">19</span></li>
+                <li><span class="titre">Autoportrait fragmenté</span><span class="numero">20</span></li>
+                <li><span class="titre">Mise en scène d’une œuvre célèbre</span><span class="numero">21</span></li>
+                <li><span class="titre">Photo de moi tel que je souhaite être</span><span class="numero">22</span></li>
+                <li><span class="titre">Une photo de moi enfant de 0 à 10 ans</span><span class="numero">26</span></li>
+                <li><span class="titre">Une photo de quelqu'un qui compte pour moi</span><span class="numero">29</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="popup2" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup2')">&times;</span>
+            <h3>L’incipit de ma naissance</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <td scope="col">
+                            <p class="alinea">Un 5 juillet dans une chambre d'hôpital toulousaine, éloigné de la
+                                famille. Je suis né,
+                                d'une mère n'ayant jamais eu d'enfant, et d'un père dans la même situation, tous deux
+                                étaient donc
+                                inquiets je
+                                suppose. Le matin de ma naissance, mes parents se sont rendus à l'hôpital, on leur a dit
+                                de revenir plus
+                                tard, ils en ont donc profité pour aller manger une pizza juste avant d'y retourner, je
+                                suppose que
+                                c'est de là que vient mon caractère gourmand.
+                            <p class="alinea">Oriol, c'est le nom que m'ont denné mes parents, un nom qui me relie à mes
+                                origines,
+                                ce nom si singulier en France mais si habituel là où a commencé cette histoire, Parce
+                                que oui, le nom
+                                est catalan,
+                                tout comme moi. Ce mon qui signifie la prospérité par son origine latine tantot un
+                                oiseau migrant de la
+                                catalogne à la Russie sans ce nom, je serais quelqu'un d'autre, ce nom qui raconte mon
+                                histoire m'est
+                                rattaché à jamais.</p>
+                            </p>
+                        </td>
+                        <td scope="col">“A noir, E blanc, I rouge, U vert, O bleu : voyelles, Je dirai quelque jour vos
+                            naissances latentes.”<br>
+                            <img src="http://image1.evene.fr/files/imagecache/scope_40_40/celebrity/875.jpg"></img>De
+                            Arthur Rimbaud
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+
+    <div id="popup3" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup3')">&times;</span>
+            <h3>Ma biographie d'auteur à la manière de Michaux</h3>
+            <p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <td scope="col">
+                            <table>
+
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">2010/05/07
+                                            <br>Toulouse
+                                        </th>
+                                        <td>Naissance dans une famille aisé
+                                            <br>père ariégeois
+                                            <br>mère catalane
+                                            <br>Il est premier enfant de la famille
+                                            <br>Ses grands-parents d'origine valencienne en Espagne, exilés a Lyon
+                                            pendant la guerre
+                                            civile
+                                            <br>Fils unique
+                                            <br>Rapidement poliglote
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2015 à
+                                            <br>2020
+                                        </th>
+                                        <td>naissance d'un petit frère de cinq ans
+                                            <br>Nouvelle école, la primaire
+                                            <br>L'ennui
+                                            <br>Facilité
+                                            <br>Découverte de l'informatique
+                                            <br>Pandémie de COVID-19
+                                            <br>Confiné chez lui pour deux ans
+                                            <br>Travail à distance
+                                            <br>École à la maison
+                                            <br>Il découvre la programmation
+                                            <br>Passion
+                                            <br>Travaille sans professeur
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2021 à
+                                            <br>2023
+                                        </th>
+                                        <td>Il fait de la robotique
+                                            <br>Deuxième passionn
+                                            <br>Des visages sans émotions ni bouche
+                                            <br>C'est la guerre contre l'inhumain, un virus
+                                            <br>Changement d'établissement scolaire
+                                            <br>Il découvre la programmation web
+                                            <br>Il s'amuse en découvrant de nouvelles choses
+                                            <br>Morts dans la famille
+                                            <br>grand-père maternel
+                                            <br>arrière-grand-mère paternelle
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2024 à
+                                            <br>2025
+                                        </th>
+                                        <td>Voyage chez des correspodants
+                                            <br>Nouvelles villes visitées
+                                            <bR>Saragoze
+                                            <br>Madrid
+                                            <br>La première des deux années, pas de sport, gymnase férmé, plus
+                                            d'escalade.
+                                            <br>deuxième année, un nouveau sport, l'aviron, premières fois qu'il fait
+                                            des commpétitions
+                                            <br>Fait de l'éléctronique, de la photo
+                                            <br>Premièr appareil photo
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td scope="col">“Toute science crée une nouvelle ignorance.”<br>
+                            <img src="http://image1.evene.fr/files/imagecache/scope_40_40/celebrity/380.jpg"></img>De
+                            Henri Michaux
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            </p>
+        </div>
+    </div>
+
+    <div id="popup4" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup4')">&times;</span>
+            <h3>Mes notes de chevet à la manière de Sei Shonagon</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <td scope="col">
+                            <p><b>Choses élégantes :</b><br>
+                                Un payage, l'été. Dans une maison, de la vie. Dans la prairie volent les papillons. La
+                                glace, avec son
+                                coulis de fraise, un biscuit.</p>
+
+                            <p><b>Choses qui ont un aspect sale :</b><br>
+                                Une impasse où vivent les chats errants se nourissant de poubelles. Un cahier d'écolier
+                                rempli à
+                                craquer.
+                                Des nuages, gris, de pollution.Un ami qui t'abandonne après de longues années d'entente.
+                                Quand il pleut
+                                et que l'on est sur l'eau mousseuse et brillante d'essence. Une cuisine qui n'a pas vu
+                                de nettoyage
+                                depuis longtemps.Une maison abandonnée et sans entretient, toute rouillée et envahie par
+                                les
+                                plantes.<br>
+                            </p>
+                            <p><b>Choses désolantes :</b><br>
+                                Un chat attaché pendant sa promenade. Une cellule de prisonnier vide depuis plus d'un
+                                an. Un nid
+                                d'abeille envahis par des frelons. Lorseque l'on nous raconte la fin d'un live que l'on
+                                est en train de
+                                lire et que l'on aime bien. Quand on va a la montagne en hiver et qu'il n'y a pas de
+                                neige. Une ligne de
+                                code qui se colore en rouge suite à son execution, ligne sur laquelle tu as travaillé
+                                longtemps, qu'elle
+                                ne fonctionne pas, ligne qui n'est point d'autre que le point d'orge de ton code</p>
+
+                            <p><b>Choses qui me font battre le coeur :</b><br>
+                                Des loups chassant en meutte dans le désert syberien. Un enfant qui joue avec un chaton.
+                                Retourner dans
+                                son village d'enfance, après des années d'absence. Passer devant une plaine pleine de
+                                vie et
+                                d'amusement. Se coucher dans une pièce humide et grinçante. Se rendre au concert d'un
+                                groupe que l'on
+                                aime bien. Jouer un spectacle devant un immense public composé d'inconnus.
+                            </p>
+                            <p><b>Choses qui font rire :</b><br>
+                                Un homme qui se prend les pieds dans un tapis. Un homme qui se fait
+                                piquer par une abeille. Deux partis ennemis se disputant comme deux vieux copains pour
+                                une loi sur
+                                laquelle ils ne sont pas d'accords. Quand quelqu'un bacque à l'aviron. Les sciences.
+                                Quand on pqrle en
+                                qmphitheatre davant 500 personnes et qu'on nous dit d'eteindre le micro car on parle
+                                trop fort. Quand on
+                                se fait piquer par une guêpe.
+                            </p>
+                            <p><b>Choses élégantes :</b><br>
+                                La vie. l'apparition de Fibonacci dans la nature, dans les escargots, dans les choux.
+                                Les langues
+                                inconnues comme le japonais ou le chinois.
+                        </td>
+                        <td scope="col">“Le succès d'un amant dépend beaucoup de sa façon de prendre congé.”<br>
+                            De Sei Shönagon</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div id="popup5" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup5')">&times;</span>
+            <h3>Inventaire : j’aime/je n’aime pas à la manière de Perec et Barthes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <td scope="col">
+                            <p><b>J'aime :</b><br>
+                                La paella Valenciana, Le chocolat au lait, Le chocolat noir, Les bonbons, La glace, La
+                                musique, La
+                                photo, La robotique, L'informatique, La programmation, L'électronique, Le cinéma, Les
+                                livres, Les jeux
+                                vidéo, Les jeux de société, Les jeux de cartes, Les jeux de rôle, Les jeux de plateau,
+                                Les jeux de
+                                stratégie, Les jeux d'aventure. Les jeux de réflexion. Les jeux de logique, Les
+                                concerts, l’eau, l’air,
+                                l’amour, l’art, l’or, l’enfance, l’école, l’univers, l’énergie, l’ombre, l’herbe,
+                                l’huile, l’abeille,
+                                l’arbre, l’idée, l’image, l’orange, l’océan, l’astre, l’insecte, l’ordinateur,
+                                l’imagination, l’étoile,
+                                l’amitié, l’odeur, l’animal, l’équilibre, l’histoire, l’heure, l’unité, l’humanité,
+                                l’objet, l’émotion,
+                                l’entrée, l’opinion, l’éléphant, l’œil, l’enfant, l’île, l’indigo, l’index,
+                                l’université, l’algue,
+                                l’invention, l’angle, l’esprit, l’éclair, l’étranger, l’élève, l’exercice, l’épice,
+                                l’opéra, l’écho,
+                                l’instant, l’intelligence, l’effort, l’ambiance, l’événement, l’hiver, l’ouverture,
+                                l’ombrelle,
+                                l’armoire, l’outil, l’ouvrage, l’auteur, l’infini, l’adresse, l’ami, l’arène, l’iris,
+                                l’aube, l’azur,
+                                l’essai, l’emballage, l’orangeade, l’évasion, l’aventure, l’horizon, l’habit,
+                                l’orchestre,
+                                l’organisation, l’orchidée, l’harmonie, l’équation, l’image, l’amande, l’anecdote,
+                                l’aigle, l’attente,
+                                l’aspiration, l’interrogation, l’illusion, l’urgence, l’attitude, l’enthousiasme,
+                                l’éthique, l’autorité,
+                                l’évidence.
+                            </p>
+
+                            <p><b>Je n'aime pas :</b><br>Le chorizo, l’ennui, l’hypocrisie, l’arrogance,
+                                l’obscurité, l’orage, l’injustice, l’insomnie, l’attente, l’indifférence, l’échec,
+                                l’ignorance, l’odeur,
+                                l’angoisse, l’abandon, l’humidité, l’avidité, l’agacement, l’inconnu, l’absurdité,
+                                l’irrespect,
+                                l’égoïsme, l’insulte, l’interruption, l’anxiété, l’embarras, l’exagération,
+                                l’intolérance, l’impolitesse, l’incohérence, l’isolement, l’envie, l’abus, l’hésitation,
+                                l’obligation, l’accusation, l’oubli, l’oppression, l’incompréhension, l’inégalité,
+                                l’insistance,
+                                l’ironie, l’inutilité, l’envahissement, l’excès, l’interdiction, l’hypersensibilité,
+                                l’invasion, l’exaspération, l’usure, l’ennemi, l’insécurité, l’instabilité, l’hostilité,
+                                l’agitation, l’agressivité, l’effort inutile, l’égo surdimensionné, l’attitude passive,
+                                l’absence de logique, l’indécision, l’impatience, l’exclusion, l’extrême, l’errance,
+                                l’inattention, l’inertie, l’indignation, l’inexactitude, l’imprécision, l’injustice
+                                flagrante, l’incompétence, l’incertitude, l’interminable, l’inefficacité, l’influence
+                                toxique,
+                                l’obstination, l’excuse facile, l’aberration, l’opacité, l’accumulation, l’anarchie,
+                                l’illusion de
+                                contrôle, l’interférence, l’instinct de possession, l’irritation, l’autosatisfaction,
+                                l’absorption
+                                totale, l’accablement, l’intensité mal placée, l’hostilité gratuite, l’incorrection,
+                                l’obstination
+                                inutile.
+                            </p>
+                        </td>
+                        <td scope="col">“JE T’AIME est sans nuances. Il supprime les explications, les aménagements, les
+                            degrés, les scrupules. ”<br>
+                            <img src="http://image2.evene.fr/files/imagecache/scope_40_40/celebrity/597.jpg"></img>De
+                            Roland Barthes
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+
+    <div id="popup7" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup7')">&times;</span>
+            <h3>Mon autoportrait à la manière d'</h3>
+
+
+
+            <table>
+                <thead>
+                    <tr>
+                        <td scope="col">
+                            <p>Enfant, je croyais que tout était facile, je me trompais.
+
+                                <br>J'ai passé à faire ce que l'on m'a dit de faire.
+                                <br>Je préfère quand je décide pour moi.
+                                <br>J'oublie ce qui m'importune
+                                <br>Je m'étonne que le monde aille si vite.
+                                <br>Je me demande si les autres pensent comme moi
+                                <br>J'aimerais que le monde soit plus juste.
+                                <br>Je préfère me faire plaisir que de faire plaisir.
+                                <br>Je ne suis pas sûr de vouloir m'éloigner de ceux que je connais.
+                                <br>On me croit sur parole quand j'explique quelque chose.
+                                <br>Je ne peux pas m'amuser autrement que seul.
+                                <br>J'ai eu l'idée de grandir, ce n'est pas toujours si simple.
+                                <br>J'ai tendance à m'éloigner de ma route
+                                <br>le bruit des vagues me rappelle toute ma vie.
+                                <br>J'ai de la sympathie pour tout ce qui bouge
+                                <br>Je n'aime pas quand les autres ne m'écoutent pas.
+                                <br>J'aime le bruit de la pluie.
+                                <br>J'ai du mal à comprendre que tout le monde reste dans sa bulle
+                                <br>Je connais mal ceux qui m'entourent
+                                <br>Je reconnais le moindre élément chimique
+                                <br>Je nomme chaque langage de programmation.
+                                <br>J'ai eu des amis
+                                <br>Mon père est là
+                                <br>Ma mère aussi
+                                <br>Je suis Oriol, je suis là, je suis moi.
+                            </p>
+                        </td>
+                        <td scope="col">La vie me semble interminable comme un après-midi d'enfance<br>De Édouard Levé
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div id="popup8" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup8')">&times;</span>
+            <h3>Mon portrait chinois (par moi)</h3>
+
+
+            <table>
+                <tr>
+                    <td scope="col"> Si j'étais un animal ? Je serais un singe.
+                        <br>Si j'étais une couleur ? Je serais un bleu eliotrope car je suis original.
+                        <br>Si j'étais une saison ? Je serais l'été.
+                        <br>Si j'étais une qualité ? Je serais le désordre qui me rend si unique.
+                        <br>Si j'étais un défaut ? Je serais le perfectionisme.
+                        <br>Si j'étais une chanson ? Je serais Dime que me quieres de Tequila, elle est énérgétique et
+                        joyeuse,
+                        comme moi.
+                        <br>Si j'étais une ville ? Je serais Cullera, ce petit village d'Espagne, où je vais chaque été.
+                        <br>Si j'étais un livre ? Je serais un livre avec plein de pages et de grosses couvertures.
+                        <br>Si j'étais un crime ? Je serais un vol, car je suis un peu voleur de temps.
+                        <br>Si j'étais un adjectif ? Je serais grand.
+                        <br>Si j'étais un sentiment ? Je serais le stress
+                        <br>Si j'étais un film ? Je serais le Voyage de Chihiro (Studio Ghibli), un film qui me fait
+                        rêver.
+                        <br>Si j'étais un sport ? Je serais l'aviron
+                        <br>Si j'étais une boisson ? Je serais l'Aigua Llimó amb sucre cremat.
+                        <br>Si j'étais une date ? Je serais le 14 mars, jour de pi.
+                        <br>Si j'étais un instrument de musique ? Je serais une thimbale
+                        <br>Si j'étais un péché capital ? Je serais la gourmandise
+                        <br>Si j'étais un plat ? Je serais une paella Valenciana, sans chorizo ni moules, mais avec des
+                        haricots
+                        verts et blancs
+                        <br>Si j'étais un jour de la semaine ? Je serais le mercredi, car c'est le jour où on travaille
+                        et on
+                        s'amuse.
+                        <br>Si j'étais une devise ? Je serais «on y va».
+                        <br>Si j'étais un élément ? Je serais l'eau.
+                        <br>Si j'étais une conjonction de coordination ? Je serais donc, je tire toujours des
+                        conclusions
+                        hâtives.
+                        <br>Si j'étais un adverbe de temps ? Je serais hier, car je suis nostalgique.
+                        <br>Si j'étais un verbe d'état ? Je serais être, car je suis un peu tout.
+                        <br>Si j'étais moi ? Je serais autre.
+                        </p>
+                    </td>
+                    <td scope="col">“Pour bien faire, mille jours ne sont pas suffisants, pour faire mal, un jour suffit
+                        amplement.”<br>proverbe chinois</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="popup9" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup9')">&times;</span>
+            <h3>Mon portrait chinois (par un autre)</h3>
+            <table>
+                <tr>
+                    <td scope="col">
+                        <p>Si Oriol un animal ? Un perroquet
+                            <br>Si Oriol étais une couleur ? Il serait le rouge, couleur vive, comme sa personnalité
+                            énergique.
+                            <br>Si Oriol étais une saison ? Il serait l'été : en effet Il est chaleureux comme un jour
+                            d'été,
+                            même
+                            s'il est parfois un peu brûlant!
+                            <br>Si Oriol étais une qualité ? Il serait l'intelligence car Il comprend vite, il apprend
+                            vite ; il
+                            réfléchit vite.
+                            <br>Si Oriol étais un défaut ? Il serait l'impulsivité, parce qu'il parle vite et fort.
+                            <br>Si Oriol étais une chanson ? Il serait dime que me quieres de Tequila
+                            <br>Si Oriol étais une ville ? Il serait Barcelone, la plus belle selon lui ; la plus
+                            vivante aussi.
+                            <br>Si Oriol étais un livre ? Il serait Harry Potter, parce qu'il adore les histoires
+                            fantastiques.
+                            <br>Si Oriol étais un prénom ? Il serait Oriol parce que ce prénom est unique, comme lui.
+                            <br>Si Oriol étais un adjectif ? Il serait bavard
+                            <br>Si Oriol étais un sentiment ? Il serait la curiosité
+                            <br>Si Oriol étais un film ? Il serait le Voyage de Chihiro (Studio Ghibli)
+                            <br>Si Oriol étais un sport ? Il serait l'aviron
+                            <br>Si Oriol étais une boisson ? Il serait la horchata
+                            <br>Si Oriol étais une date ? Il serait le 12 octobre (fête nationale espagnole)
+                            <br>Si Oriol étais un instrument de musique ? Il serait un djembé
+                            <br>Si Oriol étais un péché capital ? Il serait la gourmandise
+                            <br>Si Oriol étais un plat ? Il serait une paella Valenciana
+                            <br>Si Oriol étais un jour de la semaine ? Il serait le mercredi
+                            <br>Si Oriol étais une devise ? Il serait « Toujours plus vite ! »
+                            <br>Si Oriol étais un élément ? Il serait le feu
+                            <br>Si Oriol étais lui ? Il serait un Espagnol passionné, à la fois geek et sympa!
+                            <br>Pauline
+                        </p>
+                    </td>
+                    <td scope="col">“Un ami c'est une route, un ennemi c'est un mur.”<br>proverbe chinois</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="popup10" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup10')">&times;</span>
+            <h3>Inventaire : Je me souviens à la manière de Perec</h3>
+
+
+            <table>
+                <tr>
+                    <td scope="col">
+                        <p>
+                        <ol>
+                            <li>Je me souviens de la pandémie du COVID-19 quand nous avons du rester chez nous pendant 2
+                                ans.</li>
+                            <li>Je me souviens de tout les voyages à Barcelonne pour aller voir ma grand mère, mon grand
+                                père, ma
+                                tante, mes cousins... Et certaines fois, à Valence.</li>
+                            <li>Je me souviens de toutes les manifestations contre le gouvernement en place, je crois
+                                qu'ils les
+                                appelaient gilets-jaunes.</li>
+                            <li>Je me souviens de mes premiers pas, je ne sais pas si c'est vrai ou pas.</li>
+                            <li>Je me souviens des toupies dans la cours d'école, tout le monde en avait, et fesait des
+                                tournois,
+                                sauf moi, ces petits jouets piramidaux en plastique propulsés à toute vitesse.</li>
+                            <li>Je me souviens de comment couper un cochon pour obtenir 0 bouts, il faut le couper en -1
+                                fois, comme
+                                le nombre de bout se definit en fesant +1, mais ca ne fait rire que moi.</li>
+                            <li>Je me souviens des accidents sur la route, la police arrivait, lumière bleu et rouge,
+                                suivis des
+                                ambulances qui criaient, des humains attristés.</li>
+                            <li>Je me souviens de "si ton tonton tond ton tonton, ton tonton sera tondu".</li>
+                            <li>Je me souviens de mes premiers déplacements en vélo, je suis tombé, je me suis fait mal,
+                                mais j'ai
+                                continué à
+                                avancer.</li>
+                            <li>Je me souviens de toutes les sorties à la piscine, avec le maître pour apprendre à
+                                nager.</li>
+                            <li>Je me souviens de comment savoir si un moi a 30 ou 31 jours, il faut regarder les
+                                fallenges, si elle
+                                est creuse,
+                                c'est un mois de 30 jours, sinon, c'est un mois de 31 jours.</li>
+                            <li>Je me souviens de mes premiers pas en tant que programmeur, j'ai commencé à 10 ans, et
+                                je ne savais
+                                pas ce que je faisais.</li>
+                            <li>Je me souviens du nombre de fois où j'ai été en Espagne, je ne sais pas combien de fois,
+                                mais je
+                                sais que c'est beaucoup.</li>
+                            <li>Je me souviens de mes premières redactions, je ne savais pas comment faire, mais j'ai
+                                appris.</li>
+                            <li>Je me souviens de mes premieres photos, j'ai commencé en 6è, sur mon téléphone, mais je
+                                fesait deja
+                                des photos pour m'amuser avant, sur un petit appareil photo.</li>
+                            <li>Je me souviens de l'histoire exacte de chaque Ghibli, je les ai tous vus, et je les ai
+                                tous
+                                aimés.</li>
+                            <li>Je me souviens de mes premiers amis, je ne leur parle plus, mais ils ont existés.</li>
+                            <li>Je me souviens de la paella que l'on mangeait en bord de plage</li>
+                            <li>Je me souviens de la première fois que j'ai pris l'avion, c'était pour aller en
+                                Angleterre.</li>
+                            <li>Je me souviens de :<br>-Pourquoi les pigeons ne peuvent pas nager?<br>-Car ils
+                                rou<b>coulent</b>
+                            </li>
+                        </ol>
+                        </p>
+                    </td>
+                    <td scope="col">“La loi est implacable, mais la loi est imprévisible. Nul n'est censé l'ignorer,
+                        mais nul ne peut la connaître.”<br>De Georges Perec</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="popup12" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup12')">&times;</span>
+            <h3>Trois souvenirs d’école à la manière de Perec</h3>
+
+
+            <table>
+                <tr>
+                    <td scope="col">
+                        <p class="alinea">J'ai trois souvenirs d'école:</p>
+                        <p class="alinea">Le premier est le plus flou: c'est dans le gymnase de l'école. Nous jouions à
+                            construire
+                            des
+                            cabanes avec des tapis, des cubes et des bâtons. Ces cabanes s'effondrent immédiatement.
+                        </p>
+                        <p class="alinea">Le second est le plus tenace: on part en classe découverte. On prend le bus
+                            pour y aller,
+                            jour de fort vent et orage, un arbre tombe au milieu de la route et crée un embouteillage.
+                            Le chauffeur
+                            descend pour voir ce qui peut être fait pour déboucher la route. On l'a attendu donc
+                            longtemps très
+                            longtemps avant de pouvoir repartir lorsque le chauffeur coupa a la tronçonneuse l’arbre.
+                            Une fois
+                            arrivées toutes les autres écoles étaient arrivées. Toutes les autres classes étaient déjà
+                            là avait
+                            mangé et se préparaient à dormir mais nous non.
+                        </p>
+                        <p class="alinea">La troisième est apparemment la plus claire: en CM2, on participait à un
+                            parcours urbain
+                            en robotique de programmation. Moi aimant
+                            beaucoup ces domaines, je vis en ce parcours une grande opportunité de découvrir de
+                            nouvelles
+                            compétences. Chaque jour on avait des ateliers différents, ce qui m'a le plus marqué a été
+                            la
+                            programmation de petit robot pour découvrir la robotique sauf que mon robot tomba de la
+                            table et les
+                            roues se cassèrent. Il tomba car le professeur nous fit une blague en prenant le contrôle de
+                            tous les
+                            robots, le mien il ne l’avait pas vu, il ne fit donc pas attention. Il tomba donc de la
+                            table
+                        </p>
+                    </td>
+                    <td scope="col">“De toutes les écoles que j'ai fréquentée, c'est l'école buissonnière qui m'a paru
+                        la meilleure.”
+                        <br>De Anatole France
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="popup15" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup('popup15')">&times;</span>
+            <h3>La madeleine a la manière de Proust</h3>
+
+
+            <table>
+                <tr>
+                    <td scope="col">
+                        <p class="alinea">Il y avait bien des année que, de Cullera, tout ce qui n'était pas le théâtre
+                            et le drame
+                            de mon coucher,
+                            n'existait plus pour moi, quand un jour d'été, comme je partais a à la plage contre mon
+                            habitude
+                            j'allais dans une plage différente de mon habitude, j'allais pas à Cullera depuis maintenant
+                            longtemps.
+                            Et bientôt, je partis me baigner dans l'eau fraîche de la Méditerranée. Mais à l'instant
+                            même où l'eau
+                            toucha mes lèvres, Je tressaillis, attentif à ce qui se passait d'extraordinaire en moi. Un
+                            plaisir
+                            délicieux m'avait envahi, isolé, sans la notion de sa cause</p>
+                        <p class="alinea">Et tout d’un coup le souvenir m’est apparu. Ce goût salé, c’était le même que
+                            celui de la
+                            plage de mon
+                            enfance que je baignais chaque été à Cullera le matin(c’était quand il y faisait le moins
+                            chaud), quand
+                            je me levais, on déjeunait puis on se préparait directement pour aller à la plage. Quand
+                            j’arrivais à la
+                            plage, on allait directement plonger dans l’eau, et alors, cette eau salé m'envahissait les
+                            lèvres. Une
+                            fois sortie de l'eau, on allait toujours au même restaurant prendre le même menu. La vue de
+                            la plage ne
+                            m'avait rien rappelé avant que je ne me sois baigné. Peut-être parce qu'en ayant souvent à
+                            part aperçu
+                            la plage sans me baigner, peut-être parce que de souvenirs abandonnés si longtemps. Hors de
+                            la mémoire,
+                            rien ne survivait tout, s'était désagrégé les formes et celles des châteaux de sable et de
+                            l'horizon
+                            s'étaient abolis ou ensommeillés, aurait perdu. la force d'expansion qui leur eut permis de
+                            rejoindre la
+                            conscience.</p>
+                        <p class="alinea">m'envahissait les lèvres. Une fois sortie de l'eau, on allait toujours au même
+                            restaurant
+                            prendre le même menu. La vue de la plage ne m'avait rien rappelé avant que je ne me sois
+                            baigné.
+                            Peut-être parce qu'en ayant souvent à part aperçu la plage sans me baigner, peut-être parce
+                            que de
+                            souvenirs abandonnés si longtemps. Hors de la mémoire, rien ne survivait tout, s'était
+                            désagrégé les
+                            formes et celles des châteaux de sable et de l'horizon s'étaient abolis ou ensommeillés,
+                            aurait perdu.
+                            la force d'expansion qui leur eut permis de rejoindre la conscience.</p>
+                    </td>
+                    <td scope="col">“Ne donnez pas votre confiance, prêtez-la.”
+                        <br>De François Proust
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <!--images-->
+    <div>
+        <div id="popup16" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('popup16')">&times;</span>
+                <h3>Mon autoportrait avec un objet qui me représente</h3>
+                <p><img src="objrepresente.jpg" alt="Objet representant oriol"></p>
+                Voici mon autoportrait avec un objet qui me représente, un ordinateur, des livres, des cartes de programation, de la musique.
+            </div>
+        </div>
+
+        <div id="popup19" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('popup19')">&times;</span>
+                <h3>Un paysage qui me représente</h3>
+                <p><img src="paysage.jpg" alt="paysage"></p>
+                voici mon paysage idéal, un paysage de montagne, avec un lac et une forêt. Je me sens bien dans ce genre
+                de
+                paysage,au milieu des sentiers.
+            </div>
+        </div>
+
+        <div id="popup20" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('popup20')">&times;</span>
+                <h3>Un autoportrait fragmenté</h3>
+                <p><img src="oeil.jpg" alt="autoportrait fragmanté"></p>
+                Mon oeil, partie essentielle pour voir le monde, pour voir les autres, pour voir la beauté du monde.
+            </div>
+        </div>
+
+        <div id="popup21" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('popup21')">&times;</span>
+                <h3>Mise en scène d’une œuvre célèbre</h3>
+                <p><img src="connu.jpg" alt="mise en scene d'une oeuvre celebre"></p>
+                Voici ma mise en scène d'une oeuvre célèbre, le portrait d'un gourmand, avec la pomme.
+            </div>
+        </div>
+
+        <div id="popup22" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('popup22')">&times;</span>
+                <h3>Un autoportrait tel que je veux être</h3>
+                <p><img src="labo.jpg" alt="moi en salle blanche"></p>
+                Plus tard, je veux être un scientifique, un chercheur, un inventeur. Je veux découvrir de nouvelles
+                choses.
+            </div>
+        </div>
+        <div id="popup26" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('popup26')">&times;</span>
+                <h3>Une photo de moi enfant de 0 à 10 ans</h3>
+                <p><img src="0-10ans.jpeg" alt="oriol en train de lire en angleterre"></p>
+                En voyage en Angleterre, je lisais un livre sur le bord de la fentre de l'hotel, c'était l'un des
+                meilleurs
+                voyages de ma vie.Ellle représente pour moi mon premier gros voyage, loin de chez moi.
+            </div>
+        </div>
+
+        <div id="popup29" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closePopup('popup29')">&times;</span>
+                <h3>Une photo de quelqu'un qui compte pour moi</h3>
+                <p><img src="compte.jpg" alt="frere de oriol"></p>
+                Un être important pour moi, mon petit frère, parfois je l'aprécie, parfois je le déteste, mais il reste
+                mon
+                frère, celui qui a grandi avec moi depuis qu'il est né.
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        function openPopup(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closePopup(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            document.querySelectorAll('.popup').forEach(p => {
+                if (event.target === p) p.style.display = "none";
+            });
+        };
+    </script>
+
+</body>
+
+</html>
